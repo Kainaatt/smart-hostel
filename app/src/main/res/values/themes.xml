@@ -29,6 +29,10 @@
         <item name="android:navigationBarColor">@color/background</item>
         <item name="android:windowLightNavigationBar" tools:targetApi="o_mr1">true</item>
         
+        <!-- Text Input styling -->
+        <item name="android:editTextColor">@color/text_primary</item>
+        <item name="android:textColorHint">@color/text_hint</item>
+        
         <!-- Shape appearance -->
         <item name="shapeAppearanceSmallComponent">@style/ShapeAppearance.ComplaintApp.SmallComponent</item>
         <item name="shapeAppearanceMediumComponent">@style/ShapeAppearance.ComplaintApp.MediumComponent</item>

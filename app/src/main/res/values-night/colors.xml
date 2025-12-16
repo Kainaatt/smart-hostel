@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Override colors for Dark Mode -->
+    
+    <!-- Background & Surface Colors -->
+    <color name="background">#FF121417</color>
+    <color name="surface">#FF1E2125</color>
+    <color name="surface_variant">#FF2A2E32</color>
+    <color name="on_background">#FFF0F1F2</color>
+    <color name="on_surface">#FFF0F1F2</color>
+    <color name="on_surface_variant">#FFC4C7C9</color>
+    <color name="outline">#FF3D4044</color>
+    <color name="outline_variant">#FF525558</color>
+    
+    <!-- Text Colors - Override for dark mode -->
+    <color name="text_primary">#FFF9FAFB</color>
+    <color name="text_secondary">#FFD1D5DB</color>
+    <color name="text_hint">#FF9CA3AF</color>
+    
+    <!-- Primary Container for dark mode -->
+    <color name="primary_container">#FF1A4A4C</color>
+    <color name="on_primary_container">#FFB8E5E7</color>
+    
+    <!-- Secondary Container for dark mode -->
+    <color name="secondary_container">#FF4A2020</color>
+    <color name="on_secondary_container">#FFFFEBEB</color>
+    
+    <!-- Urgency background colors for dark mode -->
+    <color name="urgency_high_bg">#FF3D1F1F</color>
+    <color name="urgency_low_bg">#FF1A3D2A</color>
+    <color name="urgency_medium_bg">#FF3D3010</color>
+    
+    <!-- Category background colors for dark mode -->
+    <color name="category_electricity_bg">#FF2D2540</color>
+    <color name="category_water_bg">#FF1E2D40</color>
+    <color name="category_maintenance_bg">#FF3D2810</color>
+    <color name="category_cleanliness_bg">#FF1A3D30</color>
+    <color name="category_staff_bg">#FF3D1E30</color>
+    
+    <!-- Utility Colors for dark mode -->
+    <color name="divider">#FF3D4044</color>
+    <color name="shimmer">#FF2A2E32</color>
+</resources>
+

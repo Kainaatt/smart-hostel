@@ -14,20 +14,24 @@
         <item name="colorOnSecondary">@color/on_secondary</item>
         
         <!-- Background and surface colors -->
-        <item name="android:colorBackground">@color/background_dark</item>
-        <item name="colorSurface">@color/surface_dark</item>
-        <item name="colorOnBackground">@color/on_background_dark</item>
-        <item name="colorOnSurface">@color/on_surface_dark</item>
+        <item name="android:colorBackground">@color/background</item>
+        <item name="colorSurface">@color/surface</item>
+        <item name="colorOnBackground">@color/on_background</item>
+        <item name="colorOnSurface">@color/on_surface</item>
         
         <!-- Error color -->
         <item name="colorError">@color/secondary</item>
         <item name="colorOnError">@color/white</item>
         
         <!-- Status bar and navigation -->
-        <item name="android:statusBarColor">@color/background_dark</item>
+        <item name="android:statusBarColor">@color/background</item>
         <item name="android:windowLightStatusBar">false</item>
-        <item name="android:navigationBarColor">@color/background_dark</item>
+        <item name="android:navigationBarColor">@color/background</item>
         <item name="android:windowLightNavigationBar" tools:targetApi="o_mr1">false</item>
+        
+        <!-- Text Input styling -->
+        <item name="android:editTextColor">@color/text_primary</item>
+        <item name="android:textColorHint">@color/text_hint</item>
         
         <!-- Shape appearance -->
         <item name="shapeAppearanceSmallComponent">@style/ShapeAppearance.ComplaintApp.SmallComponent</item>
@@ -37,6 +41,9 @@
         <!-- Material Button Style -->
         <item name="materialButtonStyle">@style/Widget.ComplaintApp.Button</item>
         <item name="materialCardViewStyle">@style/Widget.ComplaintApp.CardView.Dark</item>
+        
+        <!-- Text Input Layout Style -->
+        <item name="textInputStyle">@style/Widget.ComplaintApp.TextInputLayout.Dark</item>
     </style>
 
     <!-- Dark Mode Card Style -->
@@ -44,8 +51,16 @@
         <item name="cardElevation">0dp</item>
         <item name="cardCornerRadius">16dp</item>
         <item name="strokeWidth">1dp</item>
-        <item name="strokeColor">@color/outline_dark</item>
-        <item name="cardBackgroundColor">@color/surface_dark</item>
+        <item name="strokeColor">@color/outline</item>
+        <item name="cardBackgroundColor">@color/surface</item>
+    </style>
+
+    <!-- Dark Mode Text Input Style -->
+    <style name="Widget.ComplaintApp.TextInputLayout.Dark" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+        <item name="boxStrokeColor">@color/primary_light</item>
+        <item name="hintTextColor">@color/primary_light</item>
+        <item name="android:textColorHint">@color/text_hint</item>
+        <item name="boxBackgroundColor">@color/surface</item>
     </style>
 
 </resources>

@@ -61,6 +61,41 @@
     <string name="complaint_too_short">Please provide more details (at least 10 characters)</string>
     <string name="complaint_submitted">Complaint submitted successfully!</string>
     
+    <!-- Login Screen -->
+    <string name="app_tagline">Smart Hostel Complaint System</string>
+    <string name="welcome_login">Welcome Back!</string>
+    <string name="login_subtitle">Sign in to continue managing your complaints</string>
+    <string name="email">Email Address</string>
+    <string name="password">Password</string>
+    <string name="forgot_password">Forgot Password?</string>
+    <string name="login">Log In</string>
+    <string name="or">or</string>
+    <string name="dont_have_account">Don\'t have an account?</string>
+    <string name="sign_up">Sign Up</string>
+    
+    <!-- Sign Up Screen -->
+    <string name="create_account">Create Account</string>
+    <string name="signup_subtitle">Join us to submit and track your hostel complaints</string>
+    <string name="full_name">Full Name</string>
+    <string name="student_id">Student ID</string>
+    <string name="room_number">Room Number</string>
+    <string name="confirm_password">Confirm Password</string>
+    <string name="already_have_account">Already have an account?</string>
+    
+    <!-- Validation Messages -->
+    <string name="please_enter_email">Please enter your email</string>
+    <string name="please_enter_valid_email">Please enter a valid email address</string>
+    <string name="please_enter_password">Please enter your password</string>
+    <string name="password_too_short">Password must be at least 6 characters</string>
+    <string name="please_enter_name">Please enter your full name</string>
+    <string name="please_enter_student_id">Please enter your student ID</string>
+    <string name="please_enter_room">Please enter your room number</string>
+    <string name="please_confirm_password">Please confirm your password</string>
+    <string name="passwords_dont_match">Passwords don\'t match</string>
+    <string name="login_success">Login successful!</string>
+    <string name="signup_success">Account created successfully!</string>
+    <string name="forgot_password_message">Password reset link will be sent to your email</string>
+    
     <!-- General -->
     <string name="loading">Loading…</string>
     <string name="error_occurred">An error occurred</string>
