@@ -40,6 +40,24 @@
             android:windowSoftInputMode="adjustResize"
             android:parentActivityName=".MainActivity" />
         
+        <activity
+            android:name=".ComplaintDetailActivity"
+            android:exported="false"
+            android:windowSoftInputMode="adjustResize"
+            android:parentActivityName=".ViewHistoryActivity" />
+        
+        <activity
+            android:name=".ViewHistoryActivity"
+            android:exported="false"
+            android:windowSoftInputMode="adjustResize"
+            android:parentActivityName=".MainActivity" />
+        
+        <activity
+            android:name=".TrackStatusActivity"
+            android:exported="false"
+            android:windowSoftInputMode="adjustResize"
+            android:parentActivityName=".MainActivity" />
+        
     </application>
 
 </manifest>

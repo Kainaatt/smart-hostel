@@ -30,11 +30,11 @@ class MainActivity : AppCompatActivity() {
 
         // Quick Action Cards
         findViewById<MaterialCardView>(R.id.cardViewHistory).setOnClickListener {
-            showToast("View history - Coming soon!")
+            startActivity(Intent(this, ViewHistoryActivity::class.java))
         }
 
         findViewById<MaterialCardView>(R.id.cardTrackStatus).setOnClickListener {
-            showToast("Track status - Coming soon!")
+            startActivity(Intent(this, TrackStatusActivity::class.java))
         }
 
         // Category Cards - open submit screen with pre-selected category
@@ -60,7 +60,7 @@ class MainActivity : AppCompatActivity() {
 
         // View All Recent Complaints
         findViewById<View>(R.id.tvViewAll).setOnClickListener {
-            showToast("View all complaints - Coming soon!")
+            startActivity(Intent(this, ViewHistoryActivity::class.java))
         }
     }
 
