@@ -1,0 +1,108 @@
+Here’s a concise one-page proposal version of your project in proper headings format:
+
+
+---
+
+Project Proposal: Smart Hostel Complaint Management System
+
+Project Title: Smart Hostel Complaint Management System
+
+Purpose:
+
+Efficiently manage internal university hostel complaints
+
+Reduce delays and confusion in handling complaints
+
+Automatically organize complaints using NLP
+
+
+Users:
+
+Students: Submit complaints
+
+Hostel Administration: Review and take action
+
+
+Features:
+
+Accept text-based complaints from students
+
+Analyze complaints using NLP
+
+Assign complaint category and detect urgency
+
+Store complaints for tracking and history
+
+
+Complaint Categories:
+
+Electricity issues
+
+Water & sanitation
+
+Room maintenance
+
+Cleanliness
+
+Staff behavior
+
+
+Urgency Levels:
+
+High: Critical issues (no water, power failure)
+
+Low: Minor maintenance issues
+
+
+NLP Functionality:
+
+Text classification → category detection
+
+Keyword + sentiment analysis → urgency detection
+
+
+Data Handling:
+
+Store complaint text, category, urgency
+
+View complaint history
+
+
+System Flow:
+Mobile App → Backend API → NLP Analysis → Database → App UI
+
+Technology Stack:
+
+Mobile: Android (Kotlin) / Flutter
+
+Backend: Flask / FastAPI
+
+NLP: Pretrained text classifier + rules
+
+Database: Firebase / SQLite
+
+
+Out of Scope:
+
+External/public complaints
+
+Complex admin dashboard
+
+Authentication system
+
+Automated decision-making
+
+
+Expected Outcomes:
+
+Faster understanding of complaints
+
+Prioritization of urgent issues
+
+Improved hostel complaint management
+
+
+
+---
+
+If you want, I can also turn this into a visually appealing single-page slide for submission. Do you want me to do that next?

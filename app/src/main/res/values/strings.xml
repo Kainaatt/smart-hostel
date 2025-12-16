@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Smart Hostel</string>
+    
+    <!-- Header -->
+    <string name="welcome_back">Welcome back,</string>
+    <string name="student_name">Student</string>
+    <string name="notifications">Notifications</string>
+    
+    <!-- Hero Section -->
+    <string name="got_an_issue">Got an issue?</string>
+    <string name="hero_description">Submit your hostel complaint and we\'ll categorize it automatically using AI for faster resolution.</string>
+    <string name="submit_complaint">Submit New Complaint</string>
+    
+    <!-- Quick Actions -->
+    <string name="quick_actions">Quick Actions</string>
+    <string name="view_history">View History</string>
+    <string name="view_history_desc">See past complaints</string>
+    <string name="track_status">Track Status</string>
+    <string name="track_status_desc">Monitor progress</string>
+    
+    <!-- Categories -->
+    <string name="categories">Categories</string>
+    <string name="categories_desc">Tap a category to file a complaint</string>
+    <string name="electricity">Electricity</string>
+    <string name="water">Water &amp; Sanitation</string>
+    <string name="maintenance">Maintenance</string>
+    <string name="cleanliness">Cleanliness</string>
+    <string name="staff">Staff Behavior</string>
+    
+    <!-- Recent Complaints -->
+    <string name="recent_complaints">Recent Complaints</string>
+    <string name="view_all">View All</string>
+    
+    <!-- Urgency Levels -->
+    <string name="high">HIGH</string>
+    <string name="low">LOW</string>
+    <string name="medium">MEDIUM</string>
+    
+    <!-- Sample Data -->
+    <string name="sample_complaint_1_title">Power outage in Room 304</string>
+    <string name="sample_complaint_1_date">Today, 10:30 AM</string>
+    <string name="sample_complaint_2_title">Bathroom cleaning required</string>
+    <string name="sample_complaint_2_date">Yesterday, 3:45 PM</string>
+    
+    <!-- General -->
+    <string name="loading">Loading…</string>
+    <string name="error_occurred">An error occurred</string>
+    <string name="retry">Retry</string>
+</resources>

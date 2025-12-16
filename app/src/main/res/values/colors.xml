@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Primary Colors - Deep Teal -->
+    <color name="primary">#FF0D7377</color>
+    <color name="primary_dark">#FF095456</color>
+    <color name="primary_light">#FF14919B</color>
+    <color name="primary_container">#FFB8E5E7</color>
+    <color name="on_primary">#FFFFFFFF</color>
+    <color name="on_primary_container">#FF002F30</color>
+
+    <!-- Secondary Colors - Warm Coral -->
+    <color name="secondary">#FFFF6B6B</color>
+    <color name="secondary_dark">#FFE85555</color>
+    <color name="secondary_light">#FFFF8A8A</color>
+    <color name="secondary_container">#FFFFEBEB</color>
+    <color name="on_secondary">#FFFFFFFF</color>
+    <color name="on_secondary_container">#FF410002</color>
+
+    <!-- Tertiary Colors - Soft Amber -->
+    <color name="tertiary">#FFFFC857</color>
+    <color name="tertiary_dark">#FFEDAB00</color>
+    <color name="tertiary_container">#FFFFF3D6</color>
+    <color name="on_tertiary">#FF3D2F00</color>
+    <color name="on_tertiary_container">#FF251C00</color>
+
+    <!-- Background & Surface Colors - Light Mode -->
+    <color name="background">#FFF8FAFA</color>
+    <color name="surface">#FFFFFFFF</color>
+    <color name="surface_variant">#FFF0F5F5</color>
+    <color name="on_background">#FF1A1C1E</color>
+    <color name="on_surface">#FF1A1C1E</color>
+    <color name="on_surface_variant">#FF424547</color>
+    <color name="outline">#FFE0E3E5</color>
+    <color name="outline_variant">#FFC4C7C9</color>
+
+    <!-- Dark Mode Colors -->
+    <color name="background_dark">#FF121417</color>
+    <color name="surface_dark">#FF1E2125</color>
+    <color name="surface_variant_dark">#FF2A2E32</color>
+    <color name="on_background_dark">#FFF0F1F2</color>
+    <color name="on_surface_dark">#FFF0F1F2</color>
+    <color name="on_surface_variant_dark">#FFC4C7C9</color>
+    <color name="outline_dark">#FF3D4044</color>
+    <color name="outline_variant_dark">#FF525558</color>
+
+    <!-- Urgency Colors -->
+    <color name="urgency_high">#FFEF4444</color>
+    <color name="urgency_high_bg">#FFFEF2F2</color>
+    <color name="urgency_low">#FF22C55E</color>
+    <color name="urgency_low_bg">#FFF0FDF4</color>
+    <color name="urgency_medium">#FFF59E0B</color>
+    <color name="urgency_medium_bg">#FFFFFBEB</color>
+
+    <!-- Category Colors -->
+    <color name="category_electricity">#FF8B5CF6</color>
+    <color name="category_electricity_bg">#FFF5F3FF</color>
+    <color name="category_water">#FF3B82F6</color>
+    <color name="category_water_bg">#FFEFF6FF</color>
+    <color name="category_maintenance">#FFF97316</color>
+    <color name="category_maintenance_bg">#FFFFF7ED</color>
+    <color name="category_cleanliness">#FF10B981</color>
+    <color name="category_cleanliness_bg">#FFECFDF5</color>
+    <color name="category_staff">#FFEC4899</color>
+    <color name="category_staff_bg">#FFFDF2F8</color>
+
+    <!-- Utility Colors -->
+    <color name="black">#FF000000</color>
+    <color name="white">#FFFFFFFF</color>
+    <color name="transparent">#00000000</color>
+    <color name="shimmer">#FFE8EBED</color>
+    <color name="divider">#FFE5E7EB</color>
+    <color name="card_shadow">#1A000000</color>
+    
+    <!-- Text Colors -->
+    <color name="text_primary">#FF1F2937</color>
+    <color name="text_secondary">#FF6B7280</color>
+    <color name="text_hint">#FF9CA3AF</color>
+    <color name="text_primary_dark">#FFF9FAFB</color>
+    <color name="text_secondary_dark">#FFD1D5DB</color>
+</resources>
