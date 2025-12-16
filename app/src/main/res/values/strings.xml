@@ -127,6 +127,53 @@
     <string name="no_active_complaints">No Active Complaints</string>
     <string name="no_active_complaints_desc">All your complaints have been resolved!</string>
     
+    <!-- Admin Panel -->
+    <string name="admin_panel">Admin Panel</string>
+    <string name="admin_subtitle">Hostel Complaint Management</string>
+    <string name="admin_login">Administrator Login</string>
+    <string name="admin_login_subtitle">Sign in to manage hostel complaints</string>
+    <string name="admin_id">Admin ID</string>
+    <string name="admin_sign_in">Sign In as Admin</string>
+    <string name="admin_access_note">This panel is restricted to hostel administration staff only. Unauthorized access is prohibited.</string>
+    <string name="please_enter_admin_id">Please enter your Admin ID</string>
+    <string name="admin_login_success">Admin login successful!</string>
+    <string name="invalid_admin_credentials">Invalid credentials. Try admin / admin123</string>
+    <string name="info">Info</string>
+    
+    <!-- Admin Dashboard -->
+    <string name="admin_dashboard">Dashboard</string>
+    <string name="hostel_administration">Hostel Administration</string>
+    <string name="logout">Logout</string>
+    <string name="logout_confirm">Are you sure you want to logout?</string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
+    <string name="total_complaints">Total Complaints</string>
+    <string name="high_urgency">High Urgency</string>
+    <string name="all_complaints">All Complaints</string>
+    <string name="view_manage">View &amp; manage</string>
+    <string name="pending_review">Pending Review</string>
+    <string name="needs_attention">Needs attention</string>
+    <string name="category_overview">Category Overview</string>
+    <string name="high_priority_complaints">High Priority</string>
+    <string name="search_complaints">Search complaints…</string>
+    
+    <!-- Admin Complaint Detail -->
+    <string name="manage_complaint">Manage Complaint</string>
+    <string name="student_info">Student Information</string>
+    <string name="name">Name</string>
+    <string name="room">Room</string>
+    <string name="complaint_description">Complaint Description</string>
+    <string name="update_status">Update Status</string>
+    <string name="update_status_desc">Change the status of this complaint</string>
+    <string name="mark_resolved">Mark as Resolved</string>
+    <string name="admin_notes">Admin Notes (Optional)</string>
+    <string name="notes_hint">Add any notes or comments…</string>
+    <string name="save_changes">Save Changes</string>
+    <string name="status_updated_to">Status updated to: %s</string>
+    
+    <!-- Login Screen - Add Admin Link -->
+    <string name="admin_access">Admin Access</string>
+    
     <!-- General -->
     <string name="loading">Loading…</string>
     <string name="error_occurred">An error occurred</string>

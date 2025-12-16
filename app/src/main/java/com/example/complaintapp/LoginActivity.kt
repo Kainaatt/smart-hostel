@@ -6,6 +6,7 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.WindowCompat
+import com.example.complaintapp.admin.AdminLoginActivity
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.textfield.TextInputEditText
 
@@ -42,6 +43,11 @@ class LoginActivity : AppCompatActivity() {
         // Forgot password
         findViewById<TextView>(R.id.tvForgotPassword).setOnClickListener {
             Toast.makeText(this, getString(R.string.forgot_password_message), Toast.LENGTH_SHORT).show()
+        }
+
+        // Admin access
+        findViewById<TextView>(R.id.tvAdminAccess).setOnClickListener {
+            startActivity(Intent(this, AdminLoginActivity::class.java))
         }
     }
 

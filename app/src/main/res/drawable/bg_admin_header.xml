@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Main gradient background - Admin theme (darker blue) -->
+    <item>
+        <shape android:shape="rectangle">
+            <gradient
+                android:type="linear"
+                android:angle="135"
+                android:startColor="#FF1E3A5F"
+                android:endColor="#FF2E5077" />
+        </shape>
+    </item>
+    <!-- Decorative circles -->
+    <item
+        android:top="-40dp"
+        android:right="-30dp">
+        <shape android:shape="oval">
+            <size
+                android:width="120dp"
+                android:height="120dp" />
+            <solid android:color="#15FFFFFF" />
+        </shape>
+    </item>
+    <item
+        android:bottom="-60dp"
+        android:left="-40dp">
+        <shape android:shape="oval">
+            <size
+                android:width="150dp"
+                android:height="150dp" />
+            <solid android:color="#10FFFFFF" />
+        </shape>
+    </item>
+</layer-list>
+

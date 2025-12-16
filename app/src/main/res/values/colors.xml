@@ -77,4 +77,10 @@
     <color name="text_hint">#FF9CA3AF</color>
     <color name="text_primary_dark">#FFF9FAFB</color>
     <color name="text_secondary_dark">#FFD1D5DB</color>
+    
+    <!-- Admin Theme Colors -->
+    <color name="admin_primary">#FF1E3A5F</color>
+    <color name="admin_primary_light">#FF2E5077</color>
+    <color name="admin_primary_dark">#FF152C47</color>
+    <color name="admin_container">#FFE8EEF5</color>
 </resources>
