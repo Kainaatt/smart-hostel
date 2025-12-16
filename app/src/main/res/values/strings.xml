@@ -43,6 +43,24 @@
     <string name="sample_complaint_2_title">Bathroom cleaning required</string>
     <string name="sample_complaint_2_date">Yesterday, 3:45 PM</string>
     
+    <!-- Submit Complaint Screen -->
+    <string name="new_complaint">New Complaint</string>
+    <string name="back">Back</string>
+    <string name="select_category">Select Category</string>
+    <string name="select_category_desc">Choose the type of issue you\'re facing</string>
+    <string name="describe_issue">Describe Your Issue</string>
+    <string name="describe_issue_desc">Provide details so we can help you faster</string>
+    <string name="complaint_hint">What\'s the problem? Be as specific as possible…</string>
+    <string name="room_location">Room / Location (Optional)</string>
+    <string name="room_hint">e.g., Room 304, Block A</string>
+    <string name="submit">Submit Complaint</string>
+    
+    <!-- Validation Messages -->
+    <string name="please_select_category">Please select a category</string>
+    <string name="please_describe_issue">Please describe your issue</string>
+    <string name="complaint_too_short">Please provide more details (at least 10 characters)</string>
+    <string name="complaint_submitted">Complaint submitted successfully!</string>
+    
     <!-- General -->
     <string name="loading">Loading…</string>
     <string name="error_occurred">An error occurred</string>

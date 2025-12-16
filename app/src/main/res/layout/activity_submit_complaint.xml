@@ -1,0 +1,445 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fillViewport="true"
+    android:background="@color/background"
+    tools:context=".SubmitComplaintActivity">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <!-- Header -->
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/bg_header_wave"
+            android:paddingBottom="24dp">
+
+            <!-- Top Bar with Back Button -->
+            <LinearLayout
+                android:id="@+id/topBar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:paddingHorizontal="16dp"
+                android:paddingTop="48dp">
+
+                <FrameLayout
+                    android:id="@+id/btnBack"
+                    android:layout_width="44dp"
+                    android:layout_height="44dp"
+                    android:background="@drawable/bg_circle_notification"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:foreground="?attr/selectableItemBackgroundBorderless">
+
+                    <ImageView
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:layout_gravity="center"
+                        android:src="@drawable/ic_back"
+                        android:contentDescription="@string/back" />
+
+                </FrameLayout>
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_marginStart="16dp"
+                    android:text="@string/new_complaint"
+                    android:textColor="@color/white"
+                    android:textSize="20sp"
+                    android:textStyle="bold" />
+
+            </LinearLayout>
+
+            <!-- Selected Category Chip (shown when category is pre-selected) -->
+            <LinearLayout
+                android:id="@+id/selectedCategoryContainer"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/topBar"
+                android:layout_marginStart="24dp"
+                android:layout_marginTop="16dp"
+                android:background="@drawable/bg_category_chip"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:paddingHorizontal="14dp"
+                android:paddingVertical="8dp"
+                android:visibility="gone">
+
+                <ImageView
+                    android:id="@+id/ivCategoryIcon"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:src="@drawable/ic_electricity"
+                    android:contentDescription="@string/categories" />
+
+                <TextView
+                    android:id="@+id/tvSelectedCategory"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:text="@string/electricity"
+                    android:textColor="@color/white"
+                    android:textSize="13sp" />
+
+            </LinearLayout>
+
+        </RelativeLayout>
+
+        <!-- Form Content -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="24dp">
+
+            <!-- Category Selection (shown when no category pre-selected) -->
+            <TextView
+                android:id="@+id/tvCategoryLabel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/select_category"
+                android:textColor="@color/text_primary"
+                android:textSize="16sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:text="@string/select_category_desc"
+                android:textColor="@color/text_secondary"
+                android:textSize="13sp" />
+
+            <!-- Category Selection Grid -->
+            <GridLayout
+                android:id="@+id/categoryGrid"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:columnCount="2"
+                android:alignmentMode="alignBounds">
+
+                <!-- Electricity -->
+                <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/cardElectricity"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_columnWeight="1"
+                    android:layout_margin="4dp"
+                    app:cardCornerRadius="12dp"
+                    app:strokeWidth="1dp"
+                    app:strokeColor="@color/outline"
+                    app:cardBackgroundColor="@color/surface"
+                    app:cardElevation="0dp"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:foreground="?attr/selectableItemBackground">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical"
+                        android:padding="12dp">
+
+                        <ImageView
+                            android:layout_width="24dp"
+                            android:layout_height="24dp"
+                            android:src="@drawable/ic_electricity"
+                            android:contentDescription="@string/electricity" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="10dp"
+                            android:text="@string/electricity"
+                            android:textColor="@color/text_primary"
+                            android:textSize="13sp" />
+
+                    </LinearLayout>
+
+                </com.google.android.material.card.MaterialCardView>
+
+                <!-- Water -->
+                <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/cardWater"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_columnWeight="1"
+                    android:layout_margin="4dp"
+                    app:cardCornerRadius="12dp"
+                    app:strokeWidth="1dp"
+                    app:strokeColor="@color/outline"
+                    app:cardBackgroundColor="@color/surface"
+                    app:cardElevation="0dp"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:foreground="?attr/selectableItemBackground">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical"
+                        android:padding="12dp">
+
+                        <ImageView
+                            android:layout_width="24dp"
+                            android:layout_height="24dp"
+                            android:src="@drawable/ic_water"
+                            android:contentDescription="@string/water" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="10dp"
+                            android:text="@string/water"
+                            android:textColor="@color/text_primary"
+                            android:textSize="13sp" />
+
+                    </LinearLayout>
+
+                </com.google.android.material.card.MaterialCardView>
+
+                <!-- Maintenance -->
+                <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/cardMaintenance"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_columnWeight="1"
+                    android:layout_margin="4dp"
+                    app:cardCornerRadius="12dp"
+                    app:strokeWidth="1dp"
+                    app:strokeColor="@color/outline"
+                    app:cardBackgroundColor="@color/surface"
+                    app:cardElevation="0dp"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:foreground="?attr/selectableItemBackground">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical"
+                        android:padding="12dp">
+
+                        <ImageView
+                            android:layout_width="24dp"
+                            android:layout_height="24dp"
+                            android:src="@drawable/ic_maintenance"
+                            android:contentDescription="@string/maintenance" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="10dp"
+                            android:text="@string/maintenance"
+                            android:textColor="@color/text_primary"
+                            android:textSize="13sp" />
+
+                    </LinearLayout>
+
+                </com.google.android.material.card.MaterialCardView>
+
+                <!-- Cleanliness -->
+                <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/cardCleanliness"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_columnWeight="1"
+                    android:layout_margin="4dp"
+                    app:cardCornerRadius="12dp"
+                    app:strokeWidth="1dp"
+                    app:strokeColor="@color/outline"
+                    app:cardBackgroundColor="@color/surface"
+                    app:cardElevation="0dp"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:foreground="?attr/selectableItemBackground">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical"
+                        android:padding="12dp">
+
+                        <ImageView
+                            android:layout_width="24dp"
+                            android:layout_height="24dp"
+                            android:src="@drawable/ic_cleanliness"
+                            android:contentDescription="@string/cleanliness" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="10dp"
+                            android:text="@string/cleanliness"
+                            android:textColor="@color/text_primary"
+                            android:textSize="13sp" />
+
+                    </LinearLayout>
+
+                </com.google.android.material.card.MaterialCardView>
+
+                <!-- Staff -->
+                <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/cardStaff"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_columnWeight="1"
+                    android:layout_margin="4dp"
+                    app:cardCornerRadius="12dp"
+                    app:strokeWidth="1dp"
+                    app:strokeColor="@color/outline"
+                    app:cardBackgroundColor="@color/surface"
+                    app:cardElevation="0dp"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:foreground="?attr/selectableItemBackground">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical"
+                        android:padding="12dp">
+
+                        <ImageView
+                            android:layout_width="24dp"
+                            android:layout_height="24dp"
+                            android:src="@drawable/ic_staff"
+                            android:contentDescription="@string/staff" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="10dp"
+                            android:text="@string/staff"
+                            android:textColor="@color/text_primary"
+                            android:textSize="13sp" />
+
+                    </LinearLayout>
+
+                </com.google.android.material.card.MaterialCardView>
+
+            </GridLayout>
+
+            <!-- Complaint Description -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="28dp"
+                android:text="@string/describe_issue"
+                android:textColor="@color/text_primary"
+                android:textSize="16sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:text="@string/describe_issue_desc"
+                android:textColor="@color/text_secondary"
+                android:textSize="13sp" />
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/tilComplaint"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                app:boxCornerRadiusTopStart="14dp"
+                app:boxCornerRadiusTopEnd="14dp"
+                app:boxCornerRadiusBottomStart="14dp"
+                app:boxCornerRadiusBottomEnd="14dp"
+                app:boxStrokeColor="@color/primary"
+                app:hintTextColor="@color/primary"
+                android:hint="@string/complaint_hint"
+                app:counterEnabled="true"
+                app:counterMaxLength="500">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/etComplaint"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:minHeight="140dp"
+                    android:gravity="top|start"
+                    android:inputType="textMultiLine|textCapSentences"
+                    android:maxLength="500"
+                    android:textColor="@color/text_primary"
+                    android:textSize="15sp" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <!-- Room/Location (Optional) -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                android:text="@string/room_location"
+                android:textColor="@color/text_primary"
+                android:textSize="16sp"
+                android:textStyle="bold" />
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/tilRoom"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                app:boxCornerRadiusTopStart="14dp"
+                app:boxCornerRadiusTopEnd="14dp"
+                app:boxCornerRadiusBottomStart="14dp"
+                app:boxCornerRadiusBottomEnd="14dp"
+                app:boxStrokeColor="@color/primary"
+                app:hintTextColor="@color/primary"
+                android:hint="@string/room_hint">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/etRoom"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="text"
+                    android:textColor="@color/text_primary"
+                    android:textSize="15sp" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <!-- Submit Button -->
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnSubmit"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="32dp"
+                android:minHeight="56dp"
+                android:paddingVertical="14dp"
+                android:text="@string/submit"
+                android:textAllCaps="false"
+                android:textColor="@color/white"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                app:cornerRadius="14dp"
+                app:backgroundTint="@color/primary" />
+
+            <Space
+                android:layout_width="match_parent"
+                android:layout_height="24dp" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</ScrollView>
+

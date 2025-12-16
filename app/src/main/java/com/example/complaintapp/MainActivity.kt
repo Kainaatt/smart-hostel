@@ -1,5 +1,6 @@
 package com.example.complaintapp
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import android.widget.Toast
@@ -22,9 +23,9 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun setupClickListeners() {
-        // Submit Complaint Button
+        // Submit Complaint Button - opens submit screen without pre-selected category
         findViewById<MaterialButton>(R.id.btnSubmitComplaint).setOnClickListener {
-            showToast("Submit complaint clicked - Coming soon!")
+            openSubmitComplaint()
         }
 
         // Quick Action Cards
@@ -36,25 +37,25 @@ class MainActivity : AppCompatActivity() {
             showToast("Track status - Coming soon!")
         }
 
-        // Category Cards
+        // Category Cards - open submit screen with pre-selected category
         findViewById<MaterialCardView>(R.id.cardElectricity).setOnClickListener {
-            showToast("Electricity complaint - Coming soon!")
+            openSubmitComplaint("electricity")
         }
 
         findViewById<MaterialCardView>(R.id.cardWater).setOnClickListener {
-            showToast("Water & Sanitation complaint - Coming soon!")
+            openSubmitComplaint("water")
         }
 
         findViewById<MaterialCardView>(R.id.cardMaintenance).setOnClickListener {
-            showToast("Maintenance complaint - Coming soon!")
+            openSubmitComplaint("maintenance")
         }
 
         findViewById<MaterialCardView>(R.id.cardCleanliness).setOnClickListener {
-            showToast("Cleanliness complaint - Coming soon!")
+            openSubmitComplaint("cleanliness")
         }
 
         findViewById<MaterialCardView>(R.id.cardStaff).setOnClickListener {
-            showToast("Staff behavior complaint - Coming soon!")
+            openSubmitComplaint("staff")
         }
 
         // View All Recent Complaints
@@ -63,8 +64,15 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    private fun openSubmitComplaint(category: String? = null) {
+        val intent = Intent(this, SubmitComplaintActivity::class.java)
+        if (category != null) {
+            intent.putExtra(SubmitComplaintActivity.EXTRA_CATEGORY, category)
+        }
+        startActivity(intent)
+    }
+
     private fun showToast(message: String) {
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
     }
 }
-
