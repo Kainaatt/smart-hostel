@@ -173,6 +173,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/all"
+                android:textColor="@color/chip_text_color"
                 android:checked="true"
                 style="@style/Widget.MaterialComponents.Chip.Choice"
                 app:chipBackgroundColor="@color/chip_background_color"
@@ -183,6 +184,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/pending"
+                android:textColor="@color/chip_text_color"
                 style="@style/Widget.MaterialComponents.Chip.Choice"
                 app:chipBackgroundColor="@color/chip_background_color"
                 app:checkedIconVisible="false" />
@@ -192,6 +194,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/in_progress"
+                android:textColor="@color/chip_text_color"
                 style="@style/Widget.MaterialComponents.Chip.Choice"
                 app:chipBackgroundColor="@color/chip_background_color"
                 app:checkedIconVisible="false" />
@@ -201,6 +204,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/resolved"
+                android:textColor="@color/chip_text_color"
                 style="@style/Widget.MaterialComponents.Chip.Choice"
                 app:chipBackgroundColor="@color/chip_background_color"
                 app:checkedIconVisible="false" />

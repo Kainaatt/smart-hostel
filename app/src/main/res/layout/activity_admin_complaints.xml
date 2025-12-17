@@ -122,6 +122,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/all"
+                android:textColor="@color/admin_chip_text_color"
                 android:checked="true"
                 style="@style/Widget.MaterialComponents.Chip.Choice"
                 app:chipBackgroundColor="@color/admin_chip_background"
@@ -132,6 +133,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/high_urgency"
+                android:textColor="@color/admin_chip_text_color"
                 style="@style/Widget.MaterialComponents.Chip.Choice"
                 app:chipBackgroundColor="@color/admin_chip_background"
                 app:checkedIconVisible="false" />
@@ -141,6 +143,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/pending"
+                android:textColor="@color/admin_chip_text_color"
                 style="@style/Widget.MaterialComponents.Chip.Choice"
                 app:chipBackgroundColor="@color/admin_chip_background"
                 app:checkedIconVisible="false" />
@@ -150,6 +153,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/in_progress"
+                android:textColor="@color/admin_chip_text_color"
                 style="@style/Widget.MaterialComponents.Chip.Choice"
                 app:chipBackgroundColor="@color/admin_chip_background"
                 app:checkedIconVisible="false" />
@@ -159,6 +163,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/resolved"
+                android:textColor="@color/admin_chip_text_color"
                 style="@style/Widget.MaterialComponents.Chip.Choice"
                 app:chipBackgroundColor="@color/admin_chip_background"
                 app:checkedIconVisible="false" />
