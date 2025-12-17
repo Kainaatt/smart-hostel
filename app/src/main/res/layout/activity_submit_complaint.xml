@@ -383,6 +383,17 @@
 
             </com.google.android.material.textfield.TextInputLayout>
 
+            <!-- AI Analysis Indicator -->
+            <TextView
+                android:id="@+id/tvAnalyzing"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="Analyzing complaint..."
+                android:textColor="@color/primary"
+                android:textSize="12sp"
+                android:visibility="gone" />
+
             <!-- Room/Location (Optional) -->
             <TextView
                 android:layout_width="wrap_content"

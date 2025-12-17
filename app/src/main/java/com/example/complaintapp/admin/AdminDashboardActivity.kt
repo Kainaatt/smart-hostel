@@ -6,26 +6,30 @@ import android.view.LayoutInflater
 import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.LinearLayout
+import android.widget.ProgressBar
 import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.WindowCompat
+import androidx.lifecycle.lifecycleScope
 import com.example.complaintapp.LoginActivity
 import com.example.complaintapp.R
+import com.example.complaintapp.data.Complaint
+import com.example.complaintapp.repository.AuthRepository
+import com.example.complaintapp.repository.ComplaintRepository
+import com.example.complaintapp.util.Constants
 import com.google.android.material.card.MaterialCardView
+import kotlinx.coroutines.launch
+import java.text.SimpleDateFormat
+import java.util.Locale
 
 class AdminDashboardActivity : AppCompatActivity() {
 
-    // Dummy data
-    private val complaints = listOf(
-        AdminComplaint("#CMP-001", "electricity", "Power outage in Room 304", "pending", "high", "Dec 16, 2024", "Ahmed Khan", "Room 304"),
-        AdminComplaint("#CMP-002", "cleanliness", "Bathroom cleaning required", "resolved", "low", "Dec 15, 2024", "Sara Ali", "Room 201"),
-        AdminComplaint("#CMP-003", "water", "Low water pressure", "in_progress", "medium", "Dec 14, 2024", "Hassan Malik", "Room 105"),
-        AdminComplaint("#CMP-004", "maintenance", "Broken window lock", "resolved", "low", "Dec 13, 2024", "Fatima Noor", "Room 302"),
-        AdminComplaint("#CMP-005", "staff", "Rude behavior by security", "pending", "high", "Dec 12, 2024", "Ali Raza", "Room 410"),
-        AdminComplaint("#CMP-006", "electricity", "Fan not working", "pending", "medium", "Dec 11, 2024", "Zainab Khan", "Room 205"),
-        AdminComplaint("#CMP-007", "water", "Leaking tap", "in_progress", "low", "Dec 10, 2024", "Omar Farooq", "Room 108"),
-    )
+    private val authRepository = AuthRepository()
+    private val complaintRepository = ComplaintRepository()
+    private var allComplaints = listOf<Complaint>()
+    private val dateFormat = SimpleDateFormat("MMM dd, yyyy", Locale.getDefault())
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -33,9 +37,7 @@ class AdminDashboardActivity : AppCompatActivity() {
         setContentView(R.layout.activity_admin_dashboard)
 
         setupClickListeners()
-        updateStats()
-        updateCategoryStats()
-        loadHighPriorityComplaints()
+        loadComplaints()
     }
 
     private fun setupClickListeners() {
@@ -71,6 +73,7 @@ class AdminDashboardActivity : AppCompatActivity() {
             .setTitle(getString(R.string.logout))
             .setMessage(getString(R.string.logout_confirm))
             .setPositiveButton(getString(R.string.yes)) { _, _ ->
+                authRepository.logout()
                 val intent = Intent(this, LoginActivity::class.java)
                 intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
                 startActivity(intent)
@@ -80,27 +83,42 @@ class AdminDashboardActivity : AppCompatActivity() {
             .show()
     }
 
+    private fun loadComplaints() {
+        lifecycleScope.launch {
+            val result = complaintRepository.getAllComplaints()
+            
+            result.onSuccess { complaints ->
+                allComplaints = complaints
+                updateStats()
+                updateCategoryStats()
+                loadHighPriorityComplaints()
+            }.onFailure { exception ->
+                Toast.makeText(this@AdminDashboardActivity, "Failed to load complaints: ${exception.message}", Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
+
     private fun updateStats() {
-        findViewById<TextView>(R.id.tvTotalComplaints).text = complaints.size.toString()
-        findViewById<TextView>(R.id.tvPendingCount).text = complaints.count { it.status == "pending" }.toString()
-        findViewById<TextView>(R.id.tvHighUrgencyCount).text = complaints.count { it.urgency == "high" }.toString()
+        findViewById<TextView>(R.id.tvTotalComplaints).text = allComplaints.size.toString()
+        findViewById<TextView>(R.id.tvPendingCount).text = allComplaints.count { it.status == Constants.STATUS_PENDING }.toString()
+        findViewById<TextView>(R.id.tvHighUrgencyCount).text = allComplaints.count { it.urgency == Constants.URGENCY_HIGH }.toString()
     }
 
     private fun updateCategoryStats() {
         val categoryStats = mapOf(
-            "electricity" to complaints.count { it.category == "electricity" },
-            "water" to complaints.count { it.category == "water" },
-            "maintenance" to complaints.count { it.category == "maintenance" },
-            "cleanliness" to complaints.count { it.category == "cleanliness" },
-            "staff" to complaints.count { it.category == "staff" }
+            Constants.CATEGORY_ELECTRICITY to allComplaints.count { it.category == Constants.CATEGORY_ELECTRICITY },
+            Constants.CATEGORY_WATER to allComplaints.count { it.category == Constants.CATEGORY_WATER },
+            Constants.CATEGORY_MAINTENANCE to allComplaints.count { it.category == Constants.CATEGORY_MAINTENANCE },
+            Constants.CATEGORY_CLEANLINESS to allComplaints.count { it.category == Constants.CATEGORY_CLEANLINESS },
+            Constants.CATEGORY_STAFF to allComplaints.count { it.category == Constants.CATEGORY_STAFF }
         )
 
         // Update each category row
-        updateCategoryRow(R.id.categoryElectricity, R.drawable.ic_electricity, "Electricity", categoryStats["electricity"] ?: 0)
-        updateCategoryRow(R.id.categoryWater, R.drawable.ic_water, "Water & Sanitation", categoryStats["water"] ?: 0)
-        updateCategoryRow(R.id.categoryMaintenance, R.drawable.ic_maintenance, "Maintenance", categoryStats["maintenance"] ?: 0)
-        updateCategoryRow(R.id.categoryCleanliness, R.drawable.ic_cleanliness, "Cleanliness", categoryStats["cleanliness"] ?: 0)
-        updateCategoryRow(R.id.categoryStaff, R.drawable.ic_staff, "Staff Behavior", categoryStats["staff"] ?: 0)
+        updateCategoryRow(R.id.categoryElectricity, R.drawable.ic_electricity, "Electricity", categoryStats[Constants.CATEGORY_ELECTRICITY] ?: 0)
+        updateCategoryRow(R.id.categoryWater, R.drawable.ic_water, "Water & Sanitation", categoryStats[Constants.CATEGORY_WATER] ?: 0)
+        updateCategoryRow(R.id.categoryMaintenance, R.drawable.ic_maintenance, "Maintenance", categoryStats[Constants.CATEGORY_MAINTENANCE] ?: 0)
+        updateCategoryRow(R.id.categoryCleanliness, R.drawable.ic_cleanliness, "Cleanliness", categoryStats[Constants.CATEGORY_CLEANLINESS] ?: 0)
+        updateCategoryRow(R.id.categoryStaff, R.drawable.ic_staff, "Staff Behavior", categoryStats[Constants.CATEGORY_STAFF] ?: 0)
     }
 
     private fun updateCategoryRow(viewId: Int, iconRes: Int, name: String, count: Int) {
@@ -114,7 +132,7 @@ class AdminDashboardActivity : AppCompatActivity() {
         val container = findViewById<LinearLayout>(R.id.highPriorityContainer)
         container.removeAllViews()
 
-        val highPriority = complaints.filter { it.urgency == "high" }.take(3)
+        val highPriority = allComplaints.filter { it.urgency == Constants.URGENCY_HIGH }.take(3)
 
         highPriority.forEach { complaint ->
             val itemView = LayoutInflater.from(this)
@@ -122,8 +140,8 @@ class AdminDashboardActivity : AppCompatActivity() {
 
             itemView.findViewById<TextView>(R.id.tvComplaintId).text = complaint.id
             itemView.findViewById<TextView>(R.id.tvTitle).text = complaint.title
-            itemView.findViewById<TextView>(R.id.tvRoom).text = complaint.room
-            itemView.findViewById<TextView>(R.id.tvDate).text = complaint.date
+            itemView.findViewById<TextView>(R.id.tvRoom).text = complaint.userRoom
+            itemView.findViewById<TextView>(R.id.tvDate).text = dateFormat.format(java.util.Date(complaint.createdAt))
 
             // Set category icon
             val (iconRes, bgRes) = getCategoryResources(complaint.category)
@@ -146,16 +164,20 @@ class AdminDashboardActivity : AppCompatActivity() {
         }
     }
 
-    private fun openComplaintDetail(complaint: AdminComplaint) {
+    private fun openComplaintDetail(complaint: Complaint) {
         startActivity(Intent(this, AdminComplaintDetailActivity::class.java).apply {
             putExtra("complaint_id", complaint.id)
             putExtra("category", complaint.category)
             putExtra("title", complaint.title)
+            putExtra("description", complaint.description)
             putExtra("status", complaint.status)
             putExtra("urgency", complaint.urgency)
-            putExtra("date", complaint.date)
-            putExtra("student_name", complaint.studentName)
-            putExtra("room", complaint.room)
+            putExtra("location", complaint.location)
+            putExtra("user_name", complaint.userName)
+            putExtra("user_room", complaint.userRoom)
+            putExtra("admin_notes", complaint.adminNotes)
+            putExtra("created_at", complaint.createdAt)
+            putExtra("updated_at", complaint.updatedAt)
         })
     }
 
@@ -172,23 +194,11 @@ class AdminDashboardActivity : AppCompatActivity() {
 
     private fun getStatusText(status: String): String {
         return when (status) {
-            "pending" -> getString(R.string.pending)
-            "in_progress" -> getString(R.string.in_progress)
-            "resolved" -> getString(R.string.resolved)
+            Constants.STATUS_PENDING -> getString(R.string.pending)
+            Constants.STATUS_IN_PROGRESS -> getString(R.string.in_progress)
+            Constants.STATUS_RESOLVED -> getString(R.string.resolved)
             else -> status
         }
     }
-
-    // Data class
-    data class AdminComplaint(
-        val id: String,
-        val category: String,
-        val title: String,
-        val status: String,
-        val urgency: String,
-        val date: String,
-        val studentName: String,
-        val room: String
-    )
 }
 

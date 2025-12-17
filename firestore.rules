@@ -1,0 +1,71 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    // Helper function to check if user is authenticated
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+    
+    // Helper function to check if user is admin
+    function isAdmin() {
+      return isAuthenticated() && 
+             exists(/databases/$(database)/documents/users/$(request.auth.uid)) &&
+             get(/databases/$(database)/documents/users/$(request.auth.uid)).data.isAdmin == true;
+    }
+    
+    // Helper function to check if user owns the document
+    function isOwner(userId) {
+      return isAuthenticated() && request.auth.uid == userId;
+    }
+    
+    // Users collection rules
+    match /users/{userId} {
+      // Users can read their own profile, admins can read all
+      allow read: if isAuthenticated() && (isOwner(userId) || isAdmin());
+      
+      // Users can create their own profile during signup
+      // Must be authenticated and creating their own document
+      allow create: if isAuthenticated() && 
+                       request.auth.uid == userId &&
+                       request.resource.data.keys().hasAll(['name', 'email', 'studentId', 'room', 'isAdmin', 'createdAt']) &&
+                       request.resource.data.isAdmin == false &&
+                       request.resource.data.email == request.auth.token.email;
+      
+      // Only admins can update user profiles
+      // Users cannot update their own profile (to prevent privilege escalation)
+      allow update: if isAuthenticated() && isAdmin();
+      
+      // Only admins can delete users
+      allow delete: if isAdmin();
+    }
+    
+    // Complaints collection rules
+    match /complaints/{complaintId} {
+      // Users can read their own complaints
+      // Admins can read all complaints
+      allow read: if isAuthenticated() && 
+                     (resource == null || isOwner(resource.data.userId) || isAdmin());
+      
+      // Users can create complaints
+      allow create: if isAuthenticated() &&
+                       request.resource.data.userId == request.auth.uid &&
+                       request.resource.data.keys().hasAll(['userId', 'userName', 'userRoom', 'category', 'urgency', 'title', 'description', 'location', 'status', 'adminNotes', 'createdAt', 'updatedAt']) &&
+                       request.resource.data.status == 'pending' &&
+                       request.resource.data.adminNotes == '';
+      
+      // Only admins can update complaints (status, adminNotes)
+      // Users cannot update their complaints after creation
+      allow update: if isAuthenticated() && isAdmin();
+      
+      // Only admins can delete complaints
+      allow delete: if isAdmin();
+    }
+    
+    // Deny all other access
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}
+

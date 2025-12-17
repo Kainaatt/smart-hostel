@@ -2,18 +2,26 @@ package com.example.complaintapp
 
 import android.content.Intent
 import android.os.Bundle
+import android.view.View
+import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.WindowCompat
+import androidx.lifecycle.lifecycleScope
 import com.example.complaintapp.admin.AdminLoginActivity
+import com.example.complaintapp.repository.AuthRepository
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.textfield.TextInputEditText
+import kotlinx.coroutines.launch
 
 class LoginActivity : AppCompatActivity() {
 
     private lateinit var etEmail: TextInputEditText
     private lateinit var etPassword: TextInputEditText
+    private lateinit var btnLogin: MaterialButton
+    private lateinit var progressBar: ProgressBar
+    private val authRepository = AuthRepository()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -27,11 +35,15 @@ class LoginActivity : AppCompatActivity() {
     private fun initViews() {
         etEmail = findViewById(R.id.etEmail)
         etPassword = findViewById(R.id.etPassword)
+        btnLogin = findViewById(R.id.btnLogin)
+        progressBar = ProgressBar(this).apply {
+            visibility = View.GONE
+        }
     }
 
     private fun setupClickListeners() {
         // Login button
-        findViewById<MaterialButton>(R.id.btnLogin).setOnClickListener {
+        btnLogin.setOnClickListener {
             performLogin()
         }
 
@@ -80,13 +92,36 @@ class LoginActivity : AppCompatActivity() {
             return
         }
 
-        // Dummy login - just go to main activity
-        Toast.makeText(this, getString(R.string.login_success), Toast.LENGTH_SHORT).show()
-        
-        val intent = Intent(this, MainActivity::class.java)
-        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-        startActivity(intent)
-        finish()
+        // Show loading
+        btnLogin.isEnabled = false
+        progressBar.visibility = View.VISIBLE
+
+        // Firebase login
+        lifecycleScope.launch {
+            val result = authRepository.login(email, password)
+            
+            btnLogin.isEnabled = true
+            progressBar.visibility = View.GONE
+
+            result.onSuccess {
+                Toast.makeText(this@LoginActivity, getString(R.string.login_success), Toast.LENGTH_SHORT).show()
+                
+                val intent = Intent(this@LoginActivity, MainActivity::class.java)
+                intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                startActivity(intent)
+                finish()
+            }.onFailure { exception ->
+                val errorMessage = when {
+                    exception.message?.contains("password") == true -> 
+                        "Invalid password. Please try again."
+                    exception.message?.contains("user") == true -> 
+                        "No account found with this email."
+                    else -> 
+                        "Login failed: ${exception.message}"
+                }
+                Toast.makeText(this@LoginActivity, errorMessage, Toast.LENGTH_SHORT).show()
+            }
+        }
     }
 }
 

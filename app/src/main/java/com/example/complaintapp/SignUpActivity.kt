@@ -2,13 +2,18 @@ package com.example.complaintapp
 
 import android.content.Intent
 import android.os.Bundle
+import android.view.View
 import android.widget.FrameLayout
+import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.WindowCompat
+import androidx.lifecycle.lifecycleScope
+import com.example.complaintapp.repository.AuthRepository
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.textfield.TextInputEditText
+import kotlinx.coroutines.launch
 
 class SignUpActivity : AppCompatActivity() {
 
@@ -18,6 +23,9 @@ class SignUpActivity : AppCompatActivity() {
     private lateinit var etEmail: TextInputEditText
     private lateinit var etPassword: TextInputEditText
     private lateinit var etConfirmPassword: TextInputEditText
+    private lateinit var btnSignUp: MaterialButton
+    private lateinit var progressBar: ProgressBar
+    private val authRepository = AuthRepository()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -35,6 +43,10 @@ class SignUpActivity : AppCompatActivity() {
         etEmail = findViewById(R.id.etEmail)
         etPassword = findViewById(R.id.etPassword)
         etConfirmPassword = findViewById(R.id.etConfirmPassword)
+        btnSignUp = findViewById(R.id.btnSignUp)
+        progressBar = ProgressBar(this).apply {
+            visibility = View.GONE
+        }
     }
 
     private fun setupClickListeners() {
@@ -44,7 +56,7 @@ class SignUpActivity : AppCompatActivity() {
         }
 
         // Sign up button
-        findViewById<MaterialButton>(R.id.btnSignUp).setOnClickListener {
+        btnSignUp.setOnClickListener {
             performSignUp()
         }
 
@@ -117,13 +129,36 @@ class SignUpActivity : AppCompatActivity() {
             return
         }
 
-        // Dummy sign up - just go to main activity
-        Toast.makeText(this, getString(R.string.signup_success), Toast.LENGTH_SHORT).show()
-        
-        val intent = Intent(this, MainActivity::class.java)
-        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-        startActivity(intent)
-        finish()
+        // Show loading
+        btnSignUp.isEnabled = false
+        progressBar.visibility = View.VISIBLE
+
+        // Firebase signup
+        lifecycleScope.launch {
+            val result = authRepository.signUp(email, password, name, studentId, room)
+            
+            btnSignUp.isEnabled = true
+            progressBar.visibility = View.GONE
+
+            result.onSuccess {
+                Toast.makeText(this@SignUpActivity, getString(R.string.signup_success), Toast.LENGTH_SHORT).show()
+                
+                val intent = Intent(this@SignUpActivity, MainActivity::class.java)
+                intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                startActivity(intent)
+                finish()
+            }.onFailure { exception ->
+                val errorMessage = when {
+                    exception.message?.contains("email") == true -> 
+                        "This email is already registered."
+                    exception.message?.contains("password") == true -> 
+                        "Password is too weak."
+                    else -> 
+                        "Sign up failed: ${exception.message}"
+                }
+                Toast.makeText(this@SignUpActivity, errorMessage, Toast.LENGTH_SHORT).show()
+            }
+        }
     }
 }
 

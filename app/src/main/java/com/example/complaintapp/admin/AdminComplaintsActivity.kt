@@ -8,15 +8,24 @@ import android.view.ViewGroup
 import android.widget.EditText
 import android.widget.FrameLayout
 import android.widget.ImageView
+import android.widget.ProgressBar
 import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.core.view.WindowCompat
 import androidx.core.widget.addTextChangedListener
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.complaintapp.R
+import com.example.complaintapp.data.Complaint
+import com.example.complaintapp.repository.ComplaintRepository
+import com.example.complaintapp.util.Constants
 import com.google.android.material.chip.ChipGroup
+import kotlinx.coroutines.launch
+import java.text.SimpleDateFormat
+import java.util.Locale
 
 class AdminComplaintsActivity : AppCompatActivity() {
 
@@ -24,16 +33,12 @@ class AdminComplaintsActivity : AppCompatActivity() {
     private lateinit var chipGroup: ChipGroup
     private lateinit var etSearch: EditText
     private lateinit var tvTitle: TextView
+    private lateinit var progressBar: ProgressBar
 
-    private val allComplaints = listOf(
-        AdminComplaint("#CMP-001", "electricity", "Power outage in Room 304", "pending", "high", "Dec 16, 2024", "Ahmed Khan", "Room 304"),
-        AdminComplaint("#CMP-002", "cleanliness", "Bathroom cleaning required", "resolved", "low", "Dec 15, 2024", "Sara Ali", "Room 201"),
-        AdminComplaint("#CMP-003", "water", "Low water pressure", "in_progress", "medium", "Dec 14, 2024", "Hassan Malik", "Room 105"),
-        AdminComplaint("#CMP-004", "maintenance", "Broken window lock", "resolved", "low", "Dec 13, 2024", "Fatima Noor", "Room 302"),
-        AdminComplaint("#CMP-005", "staff", "Rude behavior by security", "pending", "high", "Dec 12, 2024", "Ali Raza", "Room 410"),
-        AdminComplaint("#CMP-006", "electricity", "Fan not working", "pending", "medium", "Dec 11, 2024", "Zainab Khan", "Room 205"),
-        AdminComplaint("#CMP-007", "water", "Leaking tap", "in_progress", "low", "Dec 10, 2024", "Omar Farooq", "Room 108"),
-    )
+    private val complaintRepository = ComplaintRepository()
+    private var allComplaints = listOf<Complaint>()
+    private var filteredComplaints = listOf<Complaint>()
+    private val dateFormat = SimpleDateFormat("MMM dd, yyyy", Locale.getDefault())
 
     private var currentFilter = "all"
 
@@ -49,6 +54,7 @@ class AdminComplaintsActivity : AppCompatActivity() {
         // Check if filter was passed
         val filter = intent.getStringExtra("filter") ?: "all"
         applyInitialFilter(filter)
+        loadComplaints()
     }
 
     private fun initViews() {
@@ -56,6 +62,26 @@ class AdminComplaintsActivity : AppCompatActivity() {
         chipGroup = findViewById(R.id.chipGroup)
         etSearch = findViewById(R.id.etSearch)
         tvTitle = findViewById(R.id.tvTitle)
+        progressBar = ProgressBar(this).apply {
+            visibility = View.GONE
+        }
+    }
+    
+    private fun loadComplaints() {
+        progressBar.visibility = View.VISIBLE
+        
+        lifecycleScope.launch {
+            val result = complaintRepository.getAllComplaints()
+            
+            progressBar.visibility = View.GONE
+            
+            result.onSuccess { complaints ->
+                allComplaints = complaints
+                filterComplaints()
+            }.onFailure { exception ->
+                Toast.makeText(this@AdminComplaintsActivity, "Failed to load complaints: ${exception.message}", Toast.LENGTH_SHORT).show()
+            }
+        }
     }
 
     private fun setupClickListeners() {
@@ -84,7 +110,7 @@ class AdminComplaintsActivity : AppCompatActivity() {
 
     private fun setupRecyclerView() {
         rvComplaints.layoutManager = LinearLayoutManager(this)
-        rvComplaints.adapter = AdminComplaintAdapter(allComplaints) { complaint ->
+        rvComplaints.adapter = AdminComplaintAdapter(emptyList()) { complaint ->
             openComplaintDetail(complaint)
         }
     }
@@ -111,10 +137,10 @@ class AdminComplaintsActivity : AppCompatActivity() {
 
         var filtered = when (currentFilter) {
             "all" -> allComplaints
-            "high" -> allComplaints.filter { it.urgency == "high" }
-            "pending" -> allComplaints.filter { it.status == "pending" }
-            "in_progress" -> allComplaints.filter { it.status == "in_progress" }
-            "resolved" -> allComplaints.filter { it.status == "resolved" }
+            "high" -> allComplaints.filter { it.urgency == Constants.URGENCY_HIGH }
+            "pending" -> allComplaints.filter { it.status == Constants.STATUS_PENDING }
+            "in_progress" -> allComplaints.filter { it.status == Constants.STATUS_IN_PROGRESS }
+            "resolved" -> allComplaints.filter { it.status == Constants.STATUS_RESOLVED }
             else -> allComplaints
         }
 
@@ -122,42 +148,36 @@ class AdminComplaintsActivity : AppCompatActivity() {
             filtered = filtered.filter {
                 it.title.lowercase().contains(query) ||
                 it.id.lowercase().contains(query) ||
-                it.room.lowercase().contains(query)
+                it.userRoom.lowercase().contains(query) ||
+                it.userName.lowercase().contains(query)
             }
         }
 
+        filteredComplaints = filtered
         (rvComplaints.adapter as AdminComplaintAdapter).updateList(filtered)
     }
 
-    private fun openComplaintDetail(complaint: AdminComplaint) {
+    private fun openComplaintDetail(complaint: Complaint) {
         startActivity(Intent(this, AdminComplaintDetailActivity::class.java).apply {
             putExtra("complaint_id", complaint.id)
             putExtra("category", complaint.category)
             putExtra("title", complaint.title)
+            putExtra("description", complaint.description)
             putExtra("status", complaint.status)
             putExtra("urgency", complaint.urgency)
-            putExtra("date", complaint.date)
-            putExtra("student_name", complaint.studentName)
-            putExtra("room", complaint.room)
+            putExtra("location", complaint.location)
+            putExtra("user_name", complaint.userName)
+            putExtra("user_room", complaint.userRoom)
+            putExtra("admin_notes", complaint.adminNotes)
+            putExtra("created_at", complaint.createdAt)
+            putExtra("updated_at", complaint.updatedAt)
         })
     }
 
-    // Data class
-    data class AdminComplaint(
-        val id: String,
-        val category: String,
-        val title: String,
-        val status: String,
-        val urgency: String,
-        val date: String,
-        val studentName: String,
-        val room: String
-    )
-
     // Adapter
     inner class AdminComplaintAdapter(
-        private var complaints: List<AdminComplaint>,
-        private val onClick: (AdminComplaint) -> Unit
+        private var complaints: List<Complaint>,
+        private val onClick: (Complaint) -> Unit
     ) : RecyclerView.Adapter<AdminComplaintAdapter.ViewHolder>() {
 
         inner class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
@@ -183,8 +203,8 @@ class AdminComplaintsActivity : AppCompatActivity() {
 
             holder.tvComplaintId.text = complaint.id
             holder.tvTitle.text = complaint.title
-            holder.tvRoom.text = complaint.room
-            holder.tvDate.text = complaint.date
+            holder.tvRoom.text = complaint.userRoom
+            holder.tvDate.text = dateFormat.format(java.util.Date(complaint.createdAt))
 
             // Category
             val (iconRes, bgRes) = getCategoryResources(complaint.category)
@@ -208,7 +228,7 @@ class AdminComplaintsActivity : AppCompatActivity() {
 
         override fun getItemCount() = complaints.size
 
-        fun updateList(newList: List<AdminComplaint>) {
+        fun updateList(newList: List<Complaint>) {
             complaints = newList
             notifyDataSetChanged()
         }
@@ -235,9 +255,9 @@ class AdminComplaintsActivity : AppCompatActivity() {
 
         private fun getStatusResources(status: String): Triple<Int, Int, Int> {
             return when (status) {
-                "pending" -> Triple(R.string.pending, R.color.urgency_medium, R.drawable.bg_status_dot_pending)
-                "in_progress" -> Triple(R.string.in_progress, R.color.category_water, R.drawable.bg_status_dot_progress)
-                "resolved" -> Triple(R.string.resolved, R.color.urgency_low, R.drawable.bg_status_dot_resolved)
+                Constants.STATUS_PENDING -> Triple(R.string.pending, R.color.urgency_medium, R.drawable.bg_status_dot_pending)
+                Constants.STATUS_IN_PROGRESS -> Triple(R.string.in_progress, R.color.category_water, R.drawable.bg_status_dot_progress)
+                Constants.STATUS_RESOLVED -> Triple(R.string.resolved, R.color.urgency_low, R.drawable.bg_status_dot_resolved)
                 else -> Triple(R.string.pending, R.color.urgency_medium, R.drawable.bg_status_dot_pending)
             }
         }

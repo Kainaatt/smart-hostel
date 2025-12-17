@@ -9,26 +9,37 @@ import android.widget.EditText
 import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.LinearLayout
+import android.widget.ProgressBar
 import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.core.view.WindowCompat
 import androidx.core.widget.addTextChangedListener
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.complaintapp.data.Complaint
+import com.example.complaintapp.repository.AuthRepository
+import com.example.complaintapp.repository.ComplaintRepository
+import com.example.complaintapp.util.Constants
 import com.google.android.material.progressindicator.LinearProgressIndicator
+import kotlinx.coroutines.launch
+import java.text.SimpleDateFormat
+import java.util.Locale
+import java.util.concurrent.TimeUnit
 
 class TrackStatusActivity : AppCompatActivity() {
 
     private lateinit var rvActiveComplaints: RecyclerView
     private lateinit var emptyState: LinearLayout
     private lateinit var etSearch: EditText
+    private lateinit var progressBar: ProgressBar
 
-    private val activeComplaints = listOf(
-        TrackableComplaint("#CMP-001", "electricity", "Power outage in Room 304", "Under Review", 50, "2h ago"),
-        TrackableComplaint("#CMP-003", "water", "Low water pressure", "Assigned to Technician", 75, "1h ago"),
-        TrackableComplaint("#CMP-005", "staff", "Rude behavior by security", "Pending Review", 25, "3h ago")
-    )
+    private val authRepository = AuthRepository()
+    private val complaintRepository = ComplaintRepository()
+    private var activeComplaints = listOf<Complaint>()
+    private val dateFormat = SimpleDateFormat("MMM dd, yyyy", Locale.getDefault())
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -38,12 +49,16 @@ class TrackStatusActivity : AppCompatActivity() {
         initViews()
         setupClickListeners()
         setupRecyclerView()
+        loadActiveComplaints()
     }
 
     private fun initViews() {
         rvActiveComplaints = findViewById(R.id.rvActiveComplaints)
         emptyState = findViewById(R.id.emptyState)
         etSearch = findViewById(R.id.etSearch)
+        progressBar = ProgressBar(this).apply {
+            visibility = View.GONE
+        }
     }
 
     private fun setupClickListeners() {
@@ -59,8 +74,40 @@ class TrackStatusActivity : AppCompatActivity() {
 
     private fun setupRecyclerView() {
         rvActiveComplaints.layoutManager = LinearLayoutManager(this)
-        rvActiveComplaints.adapter = TrackAdapter(activeComplaints) { complaint ->
+        rvActiveComplaints.adapter = TrackAdapter(emptyList()) { complaint ->
             openComplaintDetail(complaint)
+        }
+    }
+
+    private fun loadActiveComplaints() {
+        val currentUser = authRepository.getCurrentUser()
+        if (currentUser == null) {
+            Toast.makeText(this, "Please login again", Toast.LENGTH_SHORT).show()
+            finish()
+            return
+        }
+
+        progressBar.visibility = View.VISIBLE
+
+        lifecycleScope.launch {
+            val result = complaintRepository.getActiveComplaints(currentUser.uid)
+            
+            progressBar.visibility = View.GONE
+
+            result.onSuccess { complaints ->
+                activeComplaints = complaints
+                (rvActiveComplaints.adapter as TrackAdapter).updateList(complaints)
+                
+                if (complaints.isEmpty()) {
+                    rvActiveComplaints.visibility = View.GONE
+                    emptyState.visibility = View.VISIBLE
+                } else {
+                    rvActiveComplaints.visibility = View.VISIBLE
+                    emptyState.visibility = View.GONE
+                }
+            }.onFailure { exception ->
+                Toast.makeText(this@TrackStatusActivity, "Failed to load complaints: ${exception.message}", Toast.LENGTH_SHORT).show()
+            }
         }
     }
 
@@ -85,30 +132,56 @@ class TrackStatusActivity : AppCompatActivity() {
         }
     }
 
-    private fun openComplaintDetail(complaint: TrackableComplaint) {
+    private fun openComplaintDetail(complaint: Complaint) {
         val intent = Intent(this, ComplaintDetailActivity::class.java).apply {
             putExtra(ComplaintDetailActivity.EXTRA_COMPLAINT_ID, complaint.id)
             putExtra(ComplaintDetailActivity.EXTRA_CATEGORY, complaint.category)
             putExtra(ComplaintDetailActivity.EXTRA_TITLE, complaint.title)
-            putExtra(ComplaintDetailActivity.EXTRA_STATUS, "in_progress")
+            putExtra(ComplaintDetailActivity.EXTRA_DESCRIPTION, complaint.description)
+            putExtra(ComplaintDetailActivity.EXTRA_STATUS, complaint.status)
+            putExtra(ComplaintDetailActivity.EXTRA_URGENCY, complaint.urgency)
+            putExtra(ComplaintDetailActivity.EXTRA_LOCATION, complaint.location)
+            putExtra(ComplaintDetailActivity.EXTRA_DATE, dateFormat.format(java.util.Date(complaint.createdAt)))
         }
         startActivity(intent)
     }
-
-    // Data class
-    data class TrackableComplaint(
-        val id: String,
-        val category: String,
-        val title: String,
-        val status: String,
-        val progress: Int,
-        val updatedTime: String
-    )
+    
+    private fun getTimeAgo(timestamp: Long): String {
+        val now = System.currentTimeMillis()
+        val diff = now - timestamp
+        
+        val hours = TimeUnit.MILLISECONDS.toHours(diff)
+        val days = TimeUnit.MILLISECONDS.toDays(diff)
+        
+        return when {
+            days > 0 -> "${days}d ago"
+            hours > 0 -> "${hours}h ago"
+            else -> "Just now"
+        }
+    }
+    
+    private fun calculateProgress(status: String): Int {
+        return when (status) {
+            Constants.STATUS_PENDING -> 25
+            Constants.STATUS_IN_PROGRESS -> 75
+            Constants.STATUS_RESOLVED -> 100
+            else -> 0
+        }
+    }
+    
+    private fun getStatusText(status: String): String {
+        return when (status) {
+            Constants.STATUS_PENDING -> "Pending Review"
+            Constants.STATUS_IN_PROGRESS -> "Under Review"
+            Constants.STATUS_RESOLVED -> "Resolved"
+            else -> status
+        }
+    }
 
     // Adapter
     inner class TrackAdapter(
-        private var complaints: List<TrackableComplaint>,
-        private val onClick: (TrackableComplaint) -> Unit
+        private var complaints: List<Complaint>,
+        private val onClick: (Complaint) -> Unit
     ) : RecyclerView.Adapter<TrackAdapter.ViewHolder>() {
 
         inner class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
@@ -134,10 +207,12 @@ class TrackStatusActivity : AppCompatActivity() {
 
             holder.tvTitle.text = complaint.title
             holder.tvComplaintId.text = complaint.id
-            holder.tvStatus.text = complaint.status
-            holder.tvUpdatedTime.text = "Updated ${complaint.updatedTime}"
-            holder.tvProgressPercent.text = "${complaint.progress}%"
-            holder.progressBar.progress = complaint.progress
+            holder.tvStatus.text = getStatusText(complaint.status)
+            holder.tvUpdatedTime.text = "Updated ${getTimeAgo(complaint.updatedAt)}"
+            
+            val progress = calculateProgress(complaint.status)
+            holder.tvProgressPercent.text = "$progress%"
+            holder.progressBar.progress = progress
 
             // Set category icon
             val (iconRes, bgRes) = getCategoryResources(complaint.category)
@@ -146,13 +221,13 @@ class TrackStatusActivity : AppCompatActivity() {
 
             // Set status color based on progress
             val statusColor = when {
-                complaint.progress < 50 -> R.color.urgency_medium
-                complaint.progress < 100 -> R.color.category_water
+                progress < 50 -> R.color.urgency_medium
+                progress < 100 -> R.color.category_water
                 else -> R.color.urgency_low
             }
             holder.tvStatus.setTextColor(ContextCompat.getColor(this@TrackStatusActivity, statusColor))
             holder.statusDot.setBackgroundResource(
-                if (complaint.progress < 50) R.drawable.bg_status_dot_pending
+                if (progress < 50) R.drawable.bg_status_dot_pending
                 else R.drawable.bg_status_dot_progress
             )
 
@@ -161,7 +236,7 @@ class TrackStatusActivity : AppCompatActivity() {
 
         override fun getItemCount() = complaints.size
 
-        fun updateList(newList: List<TrackableComplaint>) {
+        fun updateList(newList: List<Complaint>) {
             complaints = newList
             notifyDataSetChanged()
         }

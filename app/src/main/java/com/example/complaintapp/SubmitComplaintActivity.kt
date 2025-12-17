@@ -1,23 +1,36 @@
 package com.example.complaintapp
 
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.view.View
 import android.widget.FrameLayout
 import android.widget.GridLayout
 import android.widget.ImageView
 import android.widget.LinearLayout
+import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.core.view.WindowCompat
+import androidx.lifecycle.lifecycleScope
+import com.example.complaintapp.ai.GeminiService
+import com.example.complaintapp.data.Complaint
+import com.example.complaintapp.repository.AuthRepository
+import com.example.complaintapp.repository.ComplaintRepository
+import com.example.complaintapp.util.Constants
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.card.MaterialCardView
 import com.google.android.material.textfield.TextInputEditText
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 class SubmitComplaintActivity : AppCompatActivity() {
 
     private var selectedCategory: String? = null
+    private var selectedUrgency: String = "low"
     
     // Category cards
     private lateinit var cardElectricity: MaterialCardView
@@ -33,6 +46,15 @@ class SubmitComplaintActivity : AppCompatActivity() {
     private lateinit var categoryGrid: GridLayout
     private lateinit var etComplaint: TextInputEditText
     private lateinit var etRoom: TextInputEditText
+    private lateinit var btnSubmit: MaterialButton
+    private lateinit var progressBar: ProgressBar
+    private lateinit var tvAnalyzing: TextView
+
+    private val authRepository = AuthRepository()
+    private val complaintRepository = ComplaintRepository()
+    private val geminiService = GeminiService()
+    
+    private var analysisJob: Job? = null
 
     companion object {
         const val EXTRA_CATEGORY = "extra_category"
@@ -60,6 +82,11 @@ class SubmitComplaintActivity : AppCompatActivity() {
         categoryGrid = findViewById(R.id.categoryGrid)
         etComplaint = findViewById(R.id.etComplaint)
         etRoom = findViewById(R.id.etRoom)
+        btnSubmit = findViewById(R.id.btnSubmit)
+        tvAnalyzing = findViewById(R.id.tvAnalyzing)
+        progressBar = ProgressBar(this).apply {
+            visibility = View.GONE
+        }
         
         cardElectricity = findViewById(R.id.cardElectricity)
         cardWater = findViewById(R.id.cardWater)
@@ -82,8 +109,55 @@ class SubmitComplaintActivity : AppCompatActivity() {
         cardStaff.setOnClickListener { selectCategory("staff") }
 
         // Submit button
-        findViewById<MaterialButton>(R.id.btnSubmit).setOnClickListener {
+        btnSubmit.setOnClickListener {
             submitComplaint()
+        }
+
+        // Add text watcher for AI analysis
+        etComplaint.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+            
+            override fun afterTextChanged(s: Editable?) {
+                val text = s?.toString()?.trim() ?: ""
+                if (text.length >= 20) {
+                    // Cancel previous analysis
+                    analysisJob?.cancel()
+                    // Debounce: wait 1 second after user stops typing
+                    analysisJob = lifecycleScope.launch {
+                        delay(1000)
+                        analyzeComplaint(text)
+                    }
+                }
+            }
+        })
+    }
+    
+    private fun analyzeComplaint(description: String) {
+        lifecycleScope.launch {
+            tvAnalyzing.visibility = View.VISIBLE
+            
+            val result = geminiService.analyzeComplaint(description)
+            
+            tvAnalyzing.visibility = View.GONE
+            
+            result.onSuccess { analysis ->
+                // Auto-select category if not already selected
+                if (selectedCategory == null) {
+                    selectCategory(analysis.category)
+                }
+                
+                // Set urgency
+                selectedUrgency = analysis.urgency
+                
+                Toast.makeText(
+                    this@SubmitComplaintActivity,
+                    "Detected: ${analysis.category} (${analysis.urgency} urgency)",
+                    Toast.LENGTH_SHORT
+                ).show()
+            }.onFailure {
+                // Silently fail - user can still select manually
+            }
         }
     }
 
@@ -164,12 +238,63 @@ class SubmitComplaintActivity : AppCompatActivity() {
             return
         }
 
-        // TODO: Send complaint to backend/NLP API
-        // For now, just show success message
-        Toast.makeText(this, getString(R.string.complaint_submitted), Toast.LENGTH_SHORT).show()
-        
-        // Go back to home
-        finish()
+        // Get current user
+        val currentUser = authRepository.getCurrentUser()
+        if (currentUser == null) {
+            Toast.makeText(this, "Please login again", Toast.LENGTH_SHORT).show()
+            finish()
+            return
+        }
+
+        // Get user data
+        lifecycleScope.launch {
+            btnSubmit.isEnabled = false
+            progressBar.visibility = View.VISIBLE
+
+            val userResult = authRepository.getCurrentUserData()
+            
+            userResult.onSuccess { user ->
+                // Create complaint
+                val title = if (complaintText.length > 50) {
+                    complaintText.substring(0, 50) + "..."
+                } else {
+                    complaintText
+                }
+
+                val complaint = Complaint(
+                    userId = currentUser.uid,
+                    userName = user.name,
+                    userRoom = roomText.ifEmpty { user.room },
+                    category = selectedCategory!!,
+                    urgency = selectedUrgency,
+                    title = title,
+                    description = complaintText,
+                    location = roomText.ifEmpty { user.room },
+                    status = Constants.STATUS_PENDING
+                )
+
+                // Save to Firestore
+                val saveResult = complaintRepository.saveComplaint(complaint)
+                
+                btnSubmit.isEnabled = true
+                progressBar.visibility = View.GONE
+
+                saveResult.onSuccess {
+                    Toast.makeText(this@SubmitComplaintActivity, getString(R.string.complaint_submitted), Toast.LENGTH_SHORT).show()
+                    finish()
+                }.onFailure { exception ->
+                    Toast.makeText(
+                        this@SubmitComplaintActivity,
+                        "Failed to submit: ${exception.message}",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+            }.onFailure {
+                btnSubmit.isEnabled = true
+                progressBar.visibility = View.GONE
+                Toast.makeText(this@SubmitComplaintActivity, "Failed to load user data", Toast.LENGTH_SHORT).show()
+            }
+        }
     }
 }
 
