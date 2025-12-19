@@ -220,6 +220,7 @@ class ViewHistoryActivity : AppCompatActivity() {
                 Constants.STATUS_PENDING -> Triple(R.string.pending, R.color.urgency_medium, R.drawable.bg_urgency_medium)
                 Constants.STATUS_IN_PROGRESS -> Triple(R.string.in_progress, R.color.category_water, R.drawable.bg_status_in_progress)
                 Constants.STATUS_RESOLVED -> Triple(R.string.resolved, R.color.urgency_low, R.drawable.bg_urgency_low)
+                Constants.STATUS_CANCELLED -> Triple(R.string.cancelled, R.color.text_hint, R.drawable.bg_urgency_medium)
                 else -> Triple(R.string.pending, R.color.urgency_medium, R.drawable.bg_urgency_medium)
             }
         }

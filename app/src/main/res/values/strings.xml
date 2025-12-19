@@ -59,7 +59,8 @@
     <string name="please_select_category">Please select a category</string>
     <string name="please_describe_issue">Please describe your issue</string>
     <string name="complaint_too_short">Please provide more details (at least 10 characters)</string>
-    <string name="complaint_submitted">Complaint submitted successfully!</string>
+    <string name="complaint_submitted">Complaint Submitted</string>
+    <string name="complaint_cancelled_timeline">Complaint Cancelled</string>
     
     <!-- Login Screen -->
     <string name="app_tagline">Smart Hostel Complaint System</string>
@@ -115,6 +116,11 @@
     <string name="pending">Pending</string>
     <string name="resolved">Resolved</string>
     <string name="in_progress">In Progress</string>
+    <string name="cancelled">Cancelled</string>
+    <string name="cancel_complaint">Cancel Complaint</string>
+    <string name="cancel_complaint_confirm">Are you sure you want to cancel this complaint?</string>
+    <string name="complaint_cancelled">Complaint cancelled successfully</string>
+    <string name="cannot_cancel_complaint">Only pending complaints can be cancelled</string>
     <string name="all">All</string>
     <string name="no_complaints">No Complaints Found</string>
     <string name="no_complaints_desc">You haven\'t submitted any complaints yet</string>
@@ -178,4 +184,18 @@
     <string name="loading">Loading…</string>
     <string name="error_occurred">An error occurred</string>
     <string name="retry">Retry</string>
+    
+    <!-- Image Analysis -->
+    <string name="attach_photo">Attach Photo</string>
+    <string name="take_photo">Take Photo</string>
+    <string name="choose_from_gallery">Choose from Gallery</string>
+    <string name="analyzing_image">Analyzing image…</string>
+    <string name="image_analysis_complete">Image analysis complete</string>
+    <string name="ai_detected_issue">AI Detected Issue</string>
+    <string name="suggested_repairs">Suggested Repairs</string>
+    <string name="remove_photo">Remove Photo</string>
+    <string name="change_photo">Change Photo</string>
+    <string name="photo_attached">Photo attached</string>
+    <string name="failed_to_load_image">Failed to load image</string>
+    <string name="image_analysis_failed">Image analysis failed. You can still submit the complaint.</string>
 </resources>

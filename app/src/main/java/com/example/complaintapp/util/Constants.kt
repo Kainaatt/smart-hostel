@@ -1,9 +1,7 @@
 package com.example.complaintapp.util
 
 object Constants {
-    // Gemini API Key - Replace with your actual API key
-    // Get it from: https://makersuite.google.com/app/apikey
-    const val GEMINI_API_KEY = "YOUR_GEMINI_API_KEY_HERE"
+    const val GEMINI_API_KEY = "AIzaSyB4YvajlCpfFiQyGJly7F_VXzl2OREq4cg"
     
     // Firestore Collections
     const val COLLECTION_USERS = "users"
@@ -13,6 +11,7 @@ object Constants {
     const val STATUS_PENDING = "pending"
     const val STATUS_IN_PROGRESS = "in_progress"
     const val STATUS_RESOLVED = "resolved"
+    const val STATUS_CANCELLED = "cancelled"
     
     // Complaint Categories
     const val CATEGORY_ELECTRICITY = "electricity"

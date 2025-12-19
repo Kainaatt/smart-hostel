@@ -165,15 +165,17 @@ class TrackStatusActivity : AppCompatActivity() {
             Constants.STATUS_PENDING -> 25
             Constants.STATUS_IN_PROGRESS -> 75
             Constants.STATUS_RESOLVED -> 100
+            Constants.STATUS_CANCELLED -> 0
             else -> 0
         }
     }
     
     private fun getStatusText(status: String): String {
         return when (status) {
-            Constants.STATUS_PENDING -> "Pending Review"
-            Constants.STATUS_IN_PROGRESS -> "Under Review"
-            Constants.STATUS_RESOLVED -> "Resolved"
+            Constants.STATUS_PENDING -> getString(R.string.status_pending)
+            Constants.STATUS_IN_PROGRESS -> getString(R.string.in_progress)
+            Constants.STATUS_RESOLVED -> getString(R.string.resolved)
+            Constants.STATUS_CANCELLED -> getString(R.string.cancelled)
             else -> status
         }
     }
@@ -219,17 +221,16 @@ class TrackStatusActivity : AppCompatActivity() {
             holder.ivCategoryIcon.setImageResource(iconRes)
             holder.categoryIconFrame.setBackgroundResource(bgRes)
 
-            // Set status color based on progress
-            val statusColor = when {
-                progress < 50 -> R.color.urgency_medium
-                progress < 100 -> R.color.category_water
-                else -> R.color.urgency_low
+            // Set status color and dot based on status
+            val (statusColor, statusDotBg) = when (complaint.status) {
+                Constants.STATUS_PENDING -> Pair(R.color.urgency_medium, R.drawable.bg_status_dot_pending)
+                Constants.STATUS_IN_PROGRESS -> Pair(R.color.category_water, R.drawable.bg_status_dot_progress)
+                Constants.STATUS_RESOLVED -> Pair(R.color.urgency_low, R.drawable.bg_status_dot_resolved)
+                Constants.STATUS_CANCELLED -> Pair(R.color.text_hint, R.drawable.bg_status_dot_pending)
+                else -> Pair(R.color.urgency_medium, R.drawable.bg_status_dot_pending)
             }
             holder.tvStatus.setTextColor(ContextCompat.getColor(this@TrackStatusActivity, statusColor))
-            holder.statusDot.setBackgroundResource(
-                if (progress < 50) R.drawable.bg_status_dot_pending
-                else R.drawable.bg_status_dot_progress
-            )
+            holder.statusDot.setBackgroundResource(statusDotBg)
 
             holder.itemView.setOnClickListener { onClick(complaint) }
         }

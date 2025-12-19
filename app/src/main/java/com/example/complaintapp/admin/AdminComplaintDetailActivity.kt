@@ -212,6 +212,7 @@ class AdminComplaintDetailActivity : AppCompatActivity() {
                     Constants.STATUS_PENDING -> getString(R.string.status_pending)
                     Constants.STATUS_IN_PROGRESS -> getString(R.string.in_progress)
                     Constants.STATUS_RESOLVED -> getString(R.string.resolved)
+                    Constants.STATUS_CANCELLED -> getString(R.string.cancelled)
                     else -> newStatus
                 }
 

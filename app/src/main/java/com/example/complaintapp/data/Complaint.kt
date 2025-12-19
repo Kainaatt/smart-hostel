@@ -12,8 +12,10 @@ data class Complaint(
     val title: String = "",
     val description: String = "",
     val location: String = "",
-    val status: String = "pending", // pending, in_progress, resolved
+    val status: String = "pending", // pending, in_progress, resolved, cancelled
     val adminNotes: String = "",
+    val imageBase64: String = "", // Compressed Base64 image data
+    val aiImageAnalysis: String = "", // AI-generated description from image
     val createdAt: Long = System.currentTimeMillis(),
     val updatedAt: Long = System.currentTimeMillis()
 ) {
@@ -31,6 +33,8 @@ data class Complaint(
                 location = document.getString("location") ?: "",
                 status = document.getString("status") ?: "pending",
                 adminNotes = document.getString("adminNotes") ?: "",
+                imageBase64 = document.getString("imageBase64") ?: "",
+                aiImageAnalysis = document.getString("aiImageAnalysis") ?: "",
                 createdAt = document.getLong("createdAt") ?: System.currentTimeMillis(),
                 updatedAt = document.getLong("updatedAt") ?: System.currentTimeMillis()
             )
@@ -49,6 +53,8 @@ data class Complaint(
             "location" to location,
             "status" to status,
             "adminNotes" to adminNotes,
+            "imageBase64" to imageBase64,
+            "aiImageAnalysis" to aiImageAnalysis,
             "createdAt" to createdAt,
             "updatedAt" to updatedAt
         )

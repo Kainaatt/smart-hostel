@@ -52,11 +52,19 @@ service cloud.firestore {
                        request.resource.data.userId == request.auth.uid &&
                        request.resource.data.keys().hasAll(['userId', 'userName', 'userRoom', 'category', 'urgency', 'title', 'description', 'location', 'status', 'adminNotes', 'createdAt', 'updatedAt']) &&
                        request.resource.data.status == 'pending' &&
-                       request.resource.data.adminNotes == '';
+                       request.resource.data.adminNotes == '' &&
+                       (!('imageBase64' in request.resource.data) || request.resource.data.imageBase64 is string) &&
+                       (!('aiImageAnalysis' in request.resource.data) || request.resource.data.aiImageAnalysis is string);
       
-      // Only admins can update complaints (status, adminNotes)
-      // Users cannot update their complaints after creation
-      allow update: if isAuthenticated() && isAdmin();
+      // Users can update their own complaints to cancel them (only if status is pending)
+      // Admins can update any complaint (status, adminNotes)
+      allow update: if isAuthenticated() && (
+        (isOwner(resource.data.userId) && 
+         resource.data.status == 'pending' && 
+         request.resource.data.status == 'cancelled' &&
+         request.resource.data.diff(resource.data).affectedKeys().hasOnly(['status', 'updatedAt'])) ||
+        isAdmin()
+      );
       
       // Only admins can delete complaints
       allow delete: if isAdmin();

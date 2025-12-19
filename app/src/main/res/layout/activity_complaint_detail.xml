@@ -1,12 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:fillViewport="true"
     android:background="@color/background"
     tools:context=".ComplaintDetailActivity">
+
+<ScrollView
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fillViewport="true">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -296,6 +300,87 @@
 
             </LinearLayout>
 
+            <!-- Image Section -->
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/cardComplaintImage"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                android:visibility="gone"
+                app:cardCornerRadius="14dp"
+                app:strokeWidth="1dp"
+                app:strokeColor="@color/outline"
+                app:cardBackgroundColor="@color/surface"
+                app:cardElevation="2dp">
+
+                <ImageView
+                    android:id="@+id/ivComplaintImage"
+                    android:layout_width="match_parent"
+                    android:layout_height="250dp"
+                    android:scaleType="centerCrop"
+                    android:background="@color/outline"
+                    android:contentDescription="@string/photo_attached" />
+
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- AI Analysis Section -->
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/cardAIAnalysis"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:visibility="gone"
+                app:cardCornerRadius="14dp"
+                app:strokeWidth="1dp"
+                app:strokeColor="@color/primary"
+                app:cardBackgroundColor="@color/surface"
+                app:cardElevation="2dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="16dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/ai_detected_issue"
+                        android:textColor="@color/primary"
+                        android:textSize="14sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/tvAIAnalysis"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:textColor="@color/text_secondary"
+                        android:textSize="13sp"
+                        android:lineSpacingExtra="2dp" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="12dp"
+                        android:text="@string/suggested_repairs"
+                        android:textColor="@color/text_primary"
+                        android:textSize="14sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/tvSuggestedRepairs"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="4dp"
+                        android:textColor="@color/text_secondary"
+                        android:textSize="13sp"
+                        android:lineSpacingExtra="2dp" />
+
+                </LinearLayout>
+
+            </com.google.android.material.card.MaterialCardView>
+
             <!-- Timeline Section -->
             <TextView
                 android:layout_width="wrap_content"
@@ -355,6 +440,7 @@
                             android:textStyle="bold" />
 
                         <TextView
+                            android:id="@+id/tvSubmittedDate"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="2dp"
@@ -366,8 +452,9 @@
 
                 </LinearLayout>
 
-                <!-- Timeline Item 2 - Under Review -->
+                <!-- Timeline Item 2 - Under Review/Cancelled -->
                 <LinearLayout
+                    android:id="@+id/timelineItem2"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal">
@@ -379,11 +466,13 @@
                         android:gravity="center_horizontal">
 
                         <View
+                            android:id="@+id/timelineDot2"
                             android:layout_width="12dp"
                             android:layout_height="12dp"
                             android:background="@drawable/bg_timeline_dot_active" />
 
                         <View
+                            android:id="@+id/timelineLine2"
                             android:layout_width="2dp"
                             android:layout_height="0dp"
                             android:layout_weight="1"
@@ -399,6 +488,7 @@
                         android:orientation="vertical">
 
                         <TextView
+                            android:id="@+id/tvTimelineStatus2"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="@string/under_review"
@@ -407,6 +497,7 @@
                             android:textStyle="bold" />
 
                         <TextView
+                            android:id="@+id/tvTimelineDate2"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="2dp"
@@ -418,13 +509,15 @@
 
                 </LinearLayout>
 
-                <!-- Timeline Item 3 - Pending -->
+                <!-- Timeline Item 3 - Resolved/Cancelled -->
                 <LinearLayout
+                    android:id="@+id/timelineItem3"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal">
 
                     <View
+                        android:id="@+id/timelineDot3"
                         android:layout_width="12dp"
                         android:layout_height="12dp"
                         android:background="@drawable/bg_timeline_dot_inactive" />
@@ -436,6 +529,7 @@
                         android:orientation="vertical">
 
                         <TextView
+                            android:id="@+id/tvTimelineStatus3"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="@string/status_resolved"
@@ -443,6 +537,7 @@
                             android:textSize="14sp" />
 
                         <TextView
+                            android:id="@+id/tvTimelineDate3"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="2dp"
@@ -456,6 +551,18 @@
 
             </LinearLayout>
 
+            <!-- Cancel Complaint Button -->
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnCancelComplaint"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                android:text="@string/cancel_complaint"
+                android:textColor="@color/white"
+                android:backgroundTint="@color/urgency_high"
+                android:visibility="gone"
+                style="@style/Widget.MaterialComponents.Button" />
+
             <Space
                 android:layout_width="match_parent"
                 android:layout_height="24dp" />
@@ -465,4 +572,14 @@
     </LinearLayout>
 
 </ScrollView>
+
+    <!-- Progress Bar -->
+    <ProgressBar
+        android:id="@+id/progressBar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:visibility="gone" />
+
+</FrameLayout>
 

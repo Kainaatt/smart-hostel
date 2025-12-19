@@ -157,5 +157,34 @@ class ComplaintRepository {
             Result.failure(e)
         }
     }
+
+    suspend fun cancelComplaint(complaintId: String): Result<Unit> {
+        return try {
+            // First verify the complaint exists and is pending
+            val complaintResult = getComplaintById(complaintId)
+            complaintResult.onFailure { return Result.failure(it) }
+            
+            val complaint = complaintResult.getOrNull() ?: return Result.failure(Exception("Complaint not found"))
+            
+            if (complaint.status != Constants.STATUS_PENDING) {
+                return Result.failure(Exception("Only pending complaints can be cancelled"))
+            }
+            
+            // Update status to cancelled
+            val updates = mapOf(
+                "status" to Constants.STATUS_CANCELLED,
+                "updatedAt" to System.currentTimeMillis()
+            )
+            
+            db.collection(Constants.COLLECTION_COMPLAINTS)
+                .document(complaintId)
+                .update(updates)
+                .await()
+            
+            Result.success(Unit)
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
 }
 
