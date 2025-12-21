@@ -19,6 +19,13 @@ import com.example.complaintapp.data.Complaint
 import com.example.complaintapp.repository.AuthRepository
 import com.example.complaintapp.repository.ComplaintRepository
 import com.example.complaintapp.util.Constants
+import com.github.mikephil.charting.charts.BarChart
+import com.github.mikephil.charting.components.XAxis
+import com.github.mikephil.charting.data.BarData
+import com.github.mikephil.charting.data.BarDataSet
+import com.github.mikephil.charting.data.BarEntry
+import com.github.mikephil.charting.formatter.IndexAxisValueFormatter
+import com.github.mikephil.charting.formatter.ValueFormatter
 import com.google.android.material.card.MaterialCardView
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
@@ -91,6 +98,7 @@ class AdminDashboardActivity : AppCompatActivity() {
                 allComplaints = complaints
                 updateStats()
                 updateCategoryStats()
+                updateComplaintGraph()
                 loadHighPriorityComplaints()
             }.onFailure { exception ->
                 Toast.makeText(this@AdminDashboardActivity, "Failed to load complaints: ${exception.message}", Toast.LENGTH_SHORT).show()
@@ -126,6 +134,81 @@ class AdminDashboardActivity : AppCompatActivity() {
         view.findViewById<ImageView>(R.id.ivCategoryIcon).setImageResource(iconRes)
         view.findViewById<TextView>(R.id.tvCategoryName).text = name
         view.findViewById<TextView>(R.id.tvCategoryCount).text = count.toString()
+    }
+
+    private fun updateComplaintGraph() {
+        val chart = findViewById<BarChart>(R.id.chartComplaints)
+        
+        // Prepare data for status-based graph
+        val statusCounts = mapOf(
+            Constants.STATUS_PENDING to allComplaints.count { it.status == Constants.STATUS_PENDING },
+            Constants.STATUS_IN_PROGRESS to allComplaints.count { it.status == Constants.STATUS_IN_PROGRESS },
+            Constants.STATUS_RESOLVED to allComplaints.count { it.status == Constants.STATUS_RESOLVED },
+            Constants.STATUS_CANCELLED to allComplaints.count { it.status == Constants.STATUS_CANCELLED }
+        )
+
+        // Create bar entries
+        val entries = listOf(
+            BarEntry(0f, statusCounts[Constants.STATUS_PENDING]?.toFloat() ?: 0f),
+            BarEntry(1f, statusCounts[Constants.STATUS_IN_PROGRESS]?.toFloat() ?: 0f),
+            BarEntry(2f, statusCounts[Constants.STATUS_RESOLVED]?.toFloat() ?: 0f),
+            BarEntry(3f, statusCounts[Constants.STATUS_CANCELLED]?.toFloat() ?: 0f)
+        )
+
+        val dataSet = BarDataSet(entries, "Complaints by Status").apply {
+            color = getColor(R.color.admin_primary)
+            valueTextColor = getColor(R.color.text_primary)
+            valueTextSize = 12f
+            // Format values as integers
+            valueFormatter = object : ValueFormatter() {
+                override fun getFormattedValue(value: Float): String {
+                    return value.toInt().toString()
+                }
+            }
+        }
+
+        val barData = BarData(dataSet)
+        barData.barWidth = 0.5f
+
+        chart.apply {
+            data = barData
+            description.isEnabled = false
+            legend.isEnabled = false
+            setFitBars(true)
+            
+            // Configure X-axis
+            xAxis.apply {
+                position = XAxis.XAxisPosition.BOTTOM
+                granularity = 1f
+                setDrawGridLines(false)
+                textColor = getColor(R.color.text_secondary)
+                textSize = 11f
+                valueFormatter = IndexAxisValueFormatter(listOf("Pending", "In Progress", "Resolved", "Cancelled"))
+            }
+            
+            // Configure Y-axis (left)
+            axisLeft.apply {
+                setDrawGridLines(true)
+                gridColor = getColor(R.color.outline)
+                textColor = getColor(R.color.text_secondary)
+                textSize = 11f
+                axisMinimum = 0f
+                // Format Y-axis values as integers
+                valueFormatter = object : ValueFormatter() {
+                    override fun getFormattedValue(value: Float): String {
+                        return value.toInt().toString()
+                    }
+                }
+            }
+            
+            // Hide right Y-axis
+            axisRight.isEnabled = false
+            
+            // Animation
+            animateY(1000)
+            
+            invalidate()
+        }
     }
 
     private fun loadHighPriorityComplaints() {
